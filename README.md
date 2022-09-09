@@ -1,2 +1,2 @@
 # Labs_num_methods_4course
-Лабораторные работы по численным методам за 4 курс
+Laboratory works on numerical methods for the 4th course of *Applied Mathematics and Informatics* **RTU MIREA**
