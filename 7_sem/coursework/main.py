@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def method_newton(X, f: np.ndarray, w: np.ndarray, eps: float = 1e-5, max_iter=100):
+def method_newton(X, f: np.ndarray, w: np.ndarray, eps: float = 1e-3, max_iter=100) -> np.ndarray:
     """
     Вычисление системы нелиныйных арифметических уравнений методом Ньютона (Улучшение метода Ньютона)
     :params: X:list -- примерное приближение для каждой переменной в уравнении
@@ -12,19 +12,23 @@ def method_newton(X, f: np.ndarray, w: np.ndarray, eps: float = 1e-5, max_iter=1
     :return: np.ndarray -- решение системы уравнений 
     """
     x = np.array(X)
-    print(f'0: {x}')
+    iters = {} # Словарь всех итераций
+    iters[0] = x.copy()
     iter = 1
 
     while iter <= max_iter:
-
         F, W = f(x[0], x[1])*(-1), w(x[0], x[1])
+
         delta_x = np.linalg.solve(W, F)
         x += delta_x
-        print(f'{iter}: {np.round(x, 5)}')
+
+        iters[iter] = x.copy()
         if max(abs(delta_x)) < eps:
-            return x, iter
+            return iters
         iter += 1
-def fin_diff(a:float, b:float, h:int, p_x, q_x, f_x, first_equation:list, last_equation:list) -> list:
+
+
+def fin_diff(a:float, b:float, h:float, p_x, q_x, f_x, first_equation:list, last_equation:list) -> list:
     """
     Вычисление обыкновенного дифференциального уравнения второго порядка конечно-разностным методом
     :params: a:float -- левая граница
@@ -61,11 +65,11 @@ if __name__ == "__main__":
         [np.sin(p + .5) + q, np.cos(q - .5) - 1.1*p - 3])
     def w(p, q): return np.array([[np.cos(p + .5), 1], [-1.1, -np.sin(q - .5)]])
     X = [i/2 for i in [-2, 2]]
-    x, iter = method_newton(X, f, w)
+    iters = method_newton(X, f, w)
 
     # Решение ОДУ конечно-разностным методом
     a, b, h = 1, 2, 0.02
     p_x = lambda x: -(2*x+1)/x
     q_x = lambda x: (x+1)/x
     f_x = lambda x: 0
-    fin_diff(a, b, h, p_x, q_x, f_x, [-1, 1, 3*np.exp(1)*h], [1, (2*h-1), 0])
+    axis_x, axis_y = fin_diff(a, b, h, p_x, q_x, f_x, [-1, 1, 3*np.exp(1)*h], [1, (2*h-1), 0])
